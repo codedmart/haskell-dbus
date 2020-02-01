@@ -85,6 +85,7 @@ library
     , cereal
     , conduit >= 1.3.0
     , containers
+    , cpphs
     , deepseq
     , exceptions
     , filepath

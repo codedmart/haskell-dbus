@@ -5,6 +5,7 @@
 {-# LANGUAGE IncoherentInstances #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# OPTIONS_GHC -pgmP cpphs -optP --cpp #-}
 
 -- Copyright (C) 2009-2012 John Millikin <john@john-millikin.com>
 -- it under the terms of the GNU General Public License as published by
