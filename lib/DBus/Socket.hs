@@ -170,12 +170,13 @@ openWith opts addr = toSocketError (Just addr) $ bracketOnError
     (transportOpen (socketTransportOptions opts) addr)
     transportClose
     (\t -> do
-        authed <- authenticatorClient (socketAuthenticator opts) t
-        if not authed
-            then throwIO (socketError "Authentication failed")
-                { socketErrorAddress = Just addr
-                }
-            else do
+        -- authed <- authenticatorClient (socketAuthenticator opts) t
+        -- print authed
+        -- if not authed
+            -- then throwIO (socketError "Authentication failed")
+                -- { socketErrorAddress = Just addr
+                -- }
+            -- else do
                 serial <- newIORef firstSerial
                 readLock <- newMVar ()
                 writeLock <- newMVar ()
@@ -335,9 +336,12 @@ clientAuthExternal :: SocketTransport -> IO Bool
 clientAuthExternal t = do
     transportPut t (Data.ByteString.pack [0])
     uid <- System.Posix.User.getRealUserID
+    print uid
     let token = concatMap (printf "%02X" . ord) (show uid)
+    print token
     transportPutLine t ("AUTH EXTERNAL " ++ token)
     resp <- transportGetLine t
+    print resp
     case splitPrefix "OK " resp of
         Just _ -> do
             transportPutLine t "BEGIN"
@@ -378,7 +382,9 @@ serverAuthExternal t uuid = do
                     else return False
 
 transportPutLine :: Transport t => t -> String -> IO ()
-transportPutLine t line = transportPut t (Char8.pack (line ++ "\r\n"))
+transportPutLine t line = do
+  print (Char8.pack (line ++ "\r\n"))
+  transportPut t (Char8.pack (line ++ "\r\n"))
 
 transportGetLine :: Transport t => t -> IO String
 transportGetLine t = do
